@@ -5,7 +5,7 @@ import Youtube from './components/Youtube';
 import Button from 'react-bootstrap/Button';
 import "bootstrap/dist/css/bootstrap.min.css"; // ?
 
-const YOUTUBE_API_KEY = process.env.REACT_APP_YOUTUBE_API_KEY;
+const YOUTUBE_API_KEY = 'AIzaSyCjUm3hjiTGHmrckI0ClAAwmNorhwh3NTA';
 
 export default class App extends React.Component {
   state = {
@@ -20,7 +20,7 @@ export default class App extends React.Component {
 
 
 
-    if(keyword !== '' && keyword.length < 2) {
+    if(keyword !== '' && keyword.length < 3) {
       return;
     }
     // if(nextPageToken !== '') {
