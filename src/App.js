@@ -49,17 +49,36 @@ export default class App extends React.Component {
           this.setState({
             videos: response.data.items,
             nextPageToken: response.data.nextPageToken,
+            prevPageToken: response.data.prevPageToken,
+
           });
       })
       .catch(() => {
           console.log('通信に失敗しました');
       });
   }
+  getPrevPage =  (event)=> {
+    // ネストされたオブジェクトのdataまでアクセスしておく
+    console.log(this.state.nextPageToken)
+    const url = `https://www.googleapis.com/youtube/v3/search?type=video&part=id,snippet&maxResults=50&q=${this.state.keyword}&key=${YOUTUBE_API_KEY}&pageToken=${this.state.prevPageToken}`;
 
+    axios
+      .get(url)
+      .then(response => {
+          this.setState({
+            videos: response.data.items,
+            prevPageToken: response.data.prevPageToken,
+          });
+      })
+      .catch(() => {
+          console.log('通信に失敗しました');
+      });
+  }
   render() {
     return (
       <>
         <Header  class="form-control"  variant="primary"  onSerchYoutube={this.onSerchYoutube} />
+        <Button className="btn btn-demo" onClick={this.getPrevPage}>前のページ</Button>
         <Button className="btn btn-demo" onClick={this.getNextPage}>次のページ</Button>
 
         {/* 追加 */}
