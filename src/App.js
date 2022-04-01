@@ -16,16 +16,13 @@ export default class App extends React.Component {
 
   // console.log(getSearchNextPageToken)
   onSerchYoutube = (keyword) => {
-    const url = `https://www.googleapis.com/youtube/v3/search?type=video&part=snippet&order=viewCount&q=${keyword}&maxResults=50&key=${YOUTUBE_API_KEY}`;
+    const url = `https://www.googleapis.com/youtube/v3/search?type=video&part=id,snippet&order=viewCount&q=${keyword}&maxResults=50&key=${YOUTUBE_API_KEY}`;
 
 
 
     if(keyword !== '' && keyword.length < 3) {
       return;
     }
-    // if(nextPageToken !== '') {
-    //   url += `&pageToken=${nextPageToken}`;
-    // }
     axios
       .get(url)
       .then(response => {
@@ -44,10 +41,8 @@ export default class App extends React.Component {
   getNextPage =  (event)=> {
     // ネストされたオブジェクトのdataまでアクセスしておく
     console.log(this.state.nextPageToken)
-    const url = `https://www.googleapis.com/youtube/v3/search?type=video&part=snippet&maxResults=50&key=${YOUTUBE_API_KEY}&pageToken=${this.state.nextPageToken}`;
-    // if(this.state.nextPageToken !== '') {
-    //   url += `&pageToken=${this.state.nextPageToken}`;
-    // }
+    const url = `https://www.googleapis.com/youtube/v3/search?type=video&part=id,snippet&maxResults=50&q=${this.state.keyword}&key=${YOUTUBE_API_KEY}&pageToken=${this.state.nextPageToken}`;
+
     axios
       .get(url)
       .then(response => {
