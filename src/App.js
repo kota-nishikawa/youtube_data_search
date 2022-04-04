@@ -11,6 +11,9 @@ export default class App extends React.Component {
   state = {
     videos: [],
     nextPageToken: "",
+    prevPageFlg: 1,
+    prevPageToken: "",
+    nextPageFlg: 1,
   }
 
 
@@ -18,17 +21,19 @@ export default class App extends React.Component {
   onSerchYoutube = (keyword) => {
     const url = `https://www.googleapis.com/youtube/v3/search?type=video&part=id,snippet&order=viewCount&q=${keyword}&maxResults=50&key=${YOUTUBE_API_KEY}`;
 
-
-
-    if(keyword !== '' && keyword.length < 3) {
+    if(keyword == '' && keyword.length < 3) {
       return;
     }
     axios
       .get(url)
       .then(response => {
+
           this.setState({
             videos: response.data.items,
             nextPageToken: response.data.nextPageToken,
+            prevPageToken: response.data.prevPageToken,
+            prevPageFlg : response.data.prevPageToken ? 0 : 1,
+            nextPageFlg : response.data.nextPageToken ? 0 : 1,
             keyword: keyword,
           });
       })
@@ -40,8 +45,11 @@ export default class App extends React.Component {
 
   getNextPage =  (event)=> {
     // ネストされたオブジェクトのdataまでアクセスしておく
-    console.log(this.state.nextPageToken)
-    const url = `https://www.googleapis.com/youtube/v3/search?type=video&part=id,snippet&maxResults=50&q=${this.state.keyword}&key=${YOUTUBE_API_KEY}&pageToken=${this.state.nextPageToken}`;
+    const url = `https://www.googleapis.com/youtube/v3/search?type=video&part=id,snippet&order=viewCount&maxResults=50&q=${this.state.keyword}&key=${YOUTUBE_API_KEY}&pageToken=${this.state.nextPageToken}`;
+    if(this.state.keyword == '' && this.state.keyword < 3) {
+      return;
+    }
+
 
     axios
       .get(url)
@@ -50,7 +58,8 @@ export default class App extends React.Component {
             videos: response.data.items,
             nextPageToken: response.data.nextPageToken,
             prevPageToken: response.data.prevPageToken,
-
+            prevPageFlg : response.data.prevPageToken ? 0 : 1,
+            nextPageFlg : response.data.nextPageToken ? 0 : 1,
           });
       })
       .catch(() => {
@@ -59,15 +68,22 @@ export default class App extends React.Component {
   }
   getPrevPage =  (event)=> {
     // ネストされたオブジェクトのdataまでアクセスしておく
-    console.log(this.state.nextPageToken)
-    const url = `https://www.googleapis.com/youtube/v3/search?type=video&part=id,snippet&maxResults=50&q=${this.state.keyword}&key=${YOUTUBE_API_KEY}&pageToken=${this.state.prevPageToken}`;
+    const url = `https://www.googleapis.com/youtube/v3/search?type=video&part=id,snippet&order=viewCount&maxResults=50&q=${this.state.keyword}&key=${YOUTUBE_API_KEY}&pageToken=${this.state.prevPageToken}`;
+    if(this.state.keyword == '' && this.state.keyword.length < 3) {
+      return;
+    }
+
 
     axios
       .get(url)
       .then(response => {
+
           this.setState({
             videos: response.data.items,
+            nextPageToken: response.data.nextPageToken,
             prevPageToken: response.data.prevPageToken,
+            prevPageFlg : response.data.prevPageToken ? 0 : 1,
+            nextPageFlg : response.data.nextPageToken ? 0 : 1,
           });
       })
       .catch(() => {
@@ -76,10 +92,12 @@ export default class App extends React.Component {
   }
   render() {
     return (
+
+
       <>
         <Header  class="form-control"  variant="primary"  onSerchYoutube={this.onSerchYoutube} />
-        <Button className="btn btn-demo" onClick={this.getPrevPage}>前のページ</Button>
-        <Button className="btn btn-demo" onClick={this.getNextPage}>次のページ</Button>
+        <Button className="btn btn-demo" disabled={ this.state.prevPageFlg } onClick={this.getPrevPage}>前のページ</Button>
+        <Button className="btn btn-demo" disabled={ this.state.nextPageFlg } onClick={this.getNextPage}>次のページ</Button>
 
         {/* 追加 */}
         <Youtube videos={this.state.videos}/>

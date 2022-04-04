@@ -18,8 +18,8 @@ const Youtube = (props) => {
                     <img src={video.snippet.thumbnails.high.url}  alt="thumbnail"/>
                 </Card>
                 <Card.Text>
-                    This is a longer card with supporting text below as a natural
-                    lead-in to additional content. This content is a little bit longer.
+                <b>Youtubeチャンネルタイトル:</b>{ video.snippet.channelTitle}<br/>
+                <b>Youtubeタイトル:</b>{ video.snippet.title}
                 </Card.Text>
             </Col>
         )
